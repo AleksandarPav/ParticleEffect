@@ -15,7 +15,7 @@ public:
 	Swarm();
 	virtual ~Swarm();
 
-	// ni ptr da pokazuje ni na sta, ni Particle na koji pokazuje ne moze da se menja
+	// ptr can't be changed, nor the Particle it looks at
 	inline const Particle * const GetParticles() { return pSwarm_Particle; }
 
 	void Update(int TimeElapsed);

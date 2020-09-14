@@ -11,7 +11,7 @@ Swarm::~Swarm()
 	delete[] pSwarm_Particle;
 }
 
-// zovi update za svaku cesticu
+// calls update for each particle
 void Swarm::Update(int TimeElapsed)
 {
 	int Interval = abs(TimeElapsed - LastTime);

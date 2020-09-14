@@ -10,19 +10,19 @@
 using namespace std;
 
 /*
-	pri bildovanju stalno javljao neku gresku vezanu za main, a takodje
-	i rec "main" bila ljubicasta, kao da je vec definisana negde;
-	isao u GoToDefinition, sto me odvelo u SDL_main.h, gde je stajalo:
+	when building, some main-related error occured, and the word "main"
+	was purple, like it was defined somewhere; used GoToDefinition, which
+	led to SDL_main.h, where it stated:
 		#if defined(SDL_MAIN_NEEDED) || defined(SDL_MAIN_AVAILABLE)
 		#define main    SDL_main
 		#endif
-	kako sam skontao, ako je main potreban ILI dostupan, definisi main;
-	to mi nije imalo smisla, pa sam stavio negaciju kod drugog uslova, tj.
-	ako NIJE DOSTUPAN, definisi main i sad taj kod izgleda ovako:
+	it says that main should be defined if main was needed OR available,
+	which didn't make much sense, so the second condition was added negation;
+	if it ISN'T AVAILABLE, define main:
 		#if defined(SDL_MAIN_NEEDED) || !defined(SDL_MAIN_AVAILABLE)
 		#define main    SDL_main
 		#endif
-	i to je resilo problem bildovanja
+	which solved the building problem
 */
 
 /*
@@ -30,24 +30,23 @@ using namespace std;
  	0xXYZABC
   & 0xFF0000
   = 0xXY0000
-  (izvodio na papiru sa konverzijom u binarni sistem)
-  FF0000 sluzi kao maska. FF u binarnom su sve jedinice na 8 mesta (za 1 byte);
-  time se preklapa ono sto se maskira i vratice vrednosti samo na onim mestima na kojima je preklopljeno;
-  s obzirom da su ostalo sve 0, na ostalim mestima ce biti 0; u primeru gore, vratice samo XY, a ostalo nije
-  isunilo logicku AND operaciju;
+  FF0000 is a mask. FF in binary are all ones in 8 places (for 1 byte);
+  that way, it is overlapped with the thing masked and it returns values only in those places that overlap;
+  because everything else is 0, all the other places will be 0; in the example above, it returns only XY, and the rest
+  doesn't satisfy logical AND operation;
 
-  jednostavniji nacin da se dobije ista stvar je bithifting
+  more simple way: bithifting
   c = 0xXYZABC;
   c >> 16;
-  c ce sada da bude 0xXY (0x0000XY); jer smo pomerili za 2 bajta;
-  s obzirom da u hexadec treba 2 mesta za 1 bajt, ovo ga pomeri za 4 mesta i taman dodje na kraj,
-  a ono sto je bilo na kraju se odbacuje
+  c is now 0xXY (0x0000XY), because everything is shifted for 2 bytes;
+  in hexadec, 2 places are needed for 1 byte; this way, all is shifted 4 places and it comes to the end,
+  and what was at the end is thrown away
 */
 
 int main()
 {
-	// da rand() ne bi svakim pokretanjem programa vracao istu pseudo slucaju sekvencu,
-	// srand se seeduje nekim brojem, i u ovom slucaju seedujemo ga vremenom
+	// for rand() to avoid the same pseudo random sequence with every running of the program
+	// srand is seeded with some number - with time, in this case
 	srand(time(NULL));
 
 	Screen Screen;
@@ -67,20 +66,20 @@ int main()
 
 		Swarm.Update(TimeElapsed);
 
-		// sinusoidalno dobijaj nijanse za R, G, B
+		// shades for R, G, B follow sinusoidal change
 		unsigned char Red = (sin(TimeElapsed * 0.0005) + 1) / 2 * 255;
 		unsigned char Green = (sin(TimeElapsed * 0.001) + 1) / 2 * 255;
 		unsigned char Blue = (sin(TimeElapsed * 0.0015) + 1) / 2 * 255;
 
-		// getuj svih NPARTICLES cestica, svakoj postavi neku lokaciju na Screen-u,
-		// cija inicijalizacija definisana u konstruktoru Particle();
+		// get all of NPARTICLES particles, each one gets a location on the screen,
+		// whose intiialization is defined in the constructor Particle();
 		// dodajemo 1 da bi opseg presao sa -1:1 na 0:2, pa mnozimo sa polovinom visine/sirine;
 		const Particle * const pParticle = Swarm.GetParticles();
 		for (size_t i(0); i < Swarm::NPARTICLES; ++i)
 		{
 			Particle Particle = pParticle[i];
-			// i x i y mnozimo sa sirinom prozora, da bi kretanje obrazovalo
-			// kruzni oblik, a ne ovalni
+			// x and y are multiplied with window width, so that movement would be
+			// circular, and not oval
 			int x = (Particle.Particle_X + 1) * ScreenHalfWidth;
 			int y = Particle.Particle_Y * ScreenHalfWidth + ScreenHalfHeight;
 
@@ -89,7 +88,7 @@ int main()
 
 		Screen.BoxBlur();
 
-		// refresh ekrana
+		// refresh screen
 		Screen.Update();
 		
 		// if ProcessEvent returns false (the user presses X), break the main loop

@@ -1,20 +1,18 @@
 #pragma once
 
-// odabrana struktura a ne klasa jer ce stalno morati (na svaki refresh ekrana), za ogroman broj particles,
-// da se getuju njihove vrednosti; lakse onda da bude public, na ustrb enkapsulacije
+// struct is chosen over class, because particles will have to be accessed in every frame, so they need to be public
 struct Particle {
 
-	// razlog sto su koordinate double jeste taj da mozemo da programiramo neki
-	// smooth movement koji ce ukljucivati i decimalne vrednosti, pa cemo da ih roundujemo
-	// kad ddje do prikaza na ekran
+	// coordinates are of type double, so that a smooth movement with decimal values can bi programmed;
+	// when showing on screen, coordinates are rounded
 	double Particle_X;
 	double Particle_Y;
 
 private:
 
-	// brzina cestice
+	// particle velocity
 	double _Speed;
-	// ugao (0 - 360)
+	// angle in degrees (0 - 360)
 	double _Direction;
 
 private:

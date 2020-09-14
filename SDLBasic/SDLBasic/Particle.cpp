@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-// inicijalno postavi cesticu na sred ekrana
+// initially, particle is in the middle of the screen
 Particle::Particle()
 {
 	Init();
@@ -17,21 +17,22 @@ Particle::~Particle()
 
 }
 
-// azuriraj poziciju pomocu XSpeed i YSpeed koji su dobili neke random vrednosti u konstruktoru
+// update position with XSpeed and YSpeed, that got some random values in the constructor
 void Particle::Update(int Interval)
 {
-	// u svakom updateu mu daj malo dodatnog zaokreta
+	// with every update, give it a little extra spin
 	_Direction += 0.0002 * Interval;
 
-	// projekcija brzine na X i Y pravac
+	// projection of velocity to X and Y direction
 	double XSpeed = _Speed * cos(_Direction);
 	double YSpeed = _Speed * sin(_Direction);
 
-	// azuriraj trenutne pozicije cestica;
-	// mnozi sa Intervalom da bi na svim brzinama graficke bilo isto ponasanje
+	// update current particle positions;
+	// multiplied with Interval, so that speed of simulation would be constant on every platform
 	Particle_X += XSpeed * Interval;
 	Particle_Y += YSpeed * Interval;
 
+	// conditions for initializing - going off of screen and some random moment
 	if (Particle_X < -1 || Particle_X > 1 || Particle_Y < -1 || Particle_Y > 1)
 		Init();
 
@@ -41,10 +42,11 @@ void Particle::Update(int Interval)
 
 void Particle::Init()
 {
+	// initial position set to zero
 	Particle_X = 0;
 	Particle_Y = 0;
 
-	// ugao nesto random izmedju 0 i 2PI, brzina nesto izmedju 0 i konstante s kojom se mnozi
+	// angle is random between 0 i 2*PI, velocity sth between 0 and chosen constants
 	_Direction = (2 * M_PI * rand()) / RAND_MAX;
 	_Speed = (0.03 * rand()) / RAND_MAX;
 

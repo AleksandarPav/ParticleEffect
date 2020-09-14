@@ -20,7 +20,7 @@ private:
 	// every pixel has 4 channels (red, green, blue, alpha),
 	// 8 bits each, so 32 bits are needed for storing one pixel
 	Uint32 *_Buffer1;
-	// drugi bafer, za blurovanje
+	// second buffer, for blurring
 	Uint32 *_Buffer2;
 
 public:
