@@ -1,6 +1,6 @@
 # ParticleEffect
  
-The project simulates a particle fire effect.
+The project simulates a particle fire effect. Run from main.cpp.
 Created 3 classes: Particle, Swarm and Screen.
 Used SDL API for the graphics output.
 Initialized every pixel with random direction and speed, which I updated in every frame.
